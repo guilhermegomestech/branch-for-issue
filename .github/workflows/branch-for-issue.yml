@@ -18,11 +18,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const ISSUE_NUMBER=${{ github.event.issue.number }}
-            const ISSUE_TITLE=${{ github.event.issue.title }}
-            const CLEANED_TITLE=$(echo "${ISSUE_TITLE}" | sed 's/[^a-zA-Z0-9]/-/g')
-            const BRANCH_NAME="config-${ISSUE_NUMBER}-${CLEANED_TITLE}"
-            core.setOutput('branch_name', BRANCH_NAME)
+            const ISSUE_NUMBER=${{ github.event.issue.number }};
+            const ISSUE_TITLE=${{ github.event.issue.title }};
+            const CLEANED_TITLE=$(echo "${ISSUE_TITLE}" | sed 's/[^a-zA-Z0-9]/-/g');
+            const BRANCH_NAME="config-${ISSUE_NUMBER}-${CLEANED_TITLE}";
+            core.setOutput('branch_name', BRANCH_NAME);
 
       - name: Create Branch
         run: |          
