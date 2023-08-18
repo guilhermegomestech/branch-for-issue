@@ -18,11 +18,16 @@ jobs:
         run: |
           ISSUE_NUMBER=${{ github.event.issue.number }}
           ISSUE_TITLE=${{ github.event.issue.title }}
-
-          # Remove special characters using sed
+          
+          echo "${ISSUE_TITLE}"
+          
           CLEANED_TITLE=$(echo "${ISSUE_TITLE}" | sed 's/[^a-zA-Z0-9]/-/g')
+
+          echo "${CLEANED_TITLE}"
           
           BRANCH_NAME="issue-${ISSUE_NUMBER}-${CLEANED_TITLE}"
+
+          echo "${BRANCH_NAME}"
           
           # Create a new branch with the cleaned branch name
           git checkout -b $BRANCH_NAME
