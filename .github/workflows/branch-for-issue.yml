@@ -18,7 +18,9 @@ jobs:
         run: |
           ISSUE_NUMBER=${{ github.event.issue.number }}
           ISSUE_TITLE=${{ github.event.issue.title }}
-          BRANCH_NAME="issue-${ISSUE_NUMBER}-${ISSUE_TITLE}"
+          CLEANED_TITLE=$(echo "${ISSUE_TITLE}" | sed 's/[^a-zA-Z0-9]/-/g')
+          
+          BRANCH_NAME="config-${ISSUE_NUMBER}-${CLEANED_TITLE}"
           
           # Create a new branch with the calculated branch name
           git checkout -b $BRANCH_NAME
