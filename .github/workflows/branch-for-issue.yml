@@ -12,28 +12,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create name branch of issue
-        id: getBranches
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const ISSUE_NUMBER=${{ github.event.issue.number }};
-            const ISSUE_TITLE=${{ github.event.issue.title }};
-            const CLEANED_TITLE=$(echo "${ISSUE_TITLE}" | sed 's/[^a-zA-Z0-9]/-/g');
-            const BRANCH_NAME="config-${ISSUE_NUMBER}-${CLEANED_TITLE}";
-            core.setOutput('branch_name', BRANCH_NAME);
+      - name: Create Branch and Associate Issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          ISSUE_TITLE=${{ github.event.issue.title }}
 
-      - name: Create Branch
-        run: |          
-          # Create a new branch with the calculated branch name
+          # Remove special characters using sed
+          CLEANED_TITLE=$(echo "${ISSUE_TITLE}" | sed 's/[^a-zA-Z0-9]/-/g')
+          
+          BRANCH_NAME="issue-${ISSUE_NUMBER}-${CLEANED_TITLE}"
+          
+          # Create a new branch with the cleaned branch name
           git checkout -b $BRANCH_NAME
-      - name: Associate Issue for Branch
-        id: associate
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-           curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d '{"issue": '${{ github.event.issue.number }}' \
-              "https://api.github.com/repos/guilhermegomestech/branch-for-issue/issues/${{ github.event.issue.number }}/assignees"
+
+          # Associate the issue with the new branch
+          # Replace OWNER and REPO with your repository's owner and name
+          curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -d '{"issue": '${ISSUE_NUMBER}'}' \
+              "https://api.github.com/repos/guilhermegomestech/branch-for-issue/issues/${ISSUE_NUMBER}/assignees"
