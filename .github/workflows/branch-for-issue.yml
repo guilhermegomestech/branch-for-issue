@@ -16,8 +16,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ISSUE_TITLE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
-          BRANCH_NAME="issue-${ISSUE_TITLE}"
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          ISSUE_TITLE=${{ github.event.issue.title }}
+          BRANCH_NAME="issue-${ISSUE_NUMBER}-${ISSUE_TITLE}"
           
           # Create a new branch with the calculated branch name
           git checkout -b $BRANCH_NAME
@@ -25,5 +26,5 @@ jobs:
           # Associate the issue with the new branch
           # Replace OWNER and REPO with your repository's owner and name
           curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d '{"issue": '${{ github.event.issue.number }}'}' \
-            "https://api.github.com/repos/OWNER/REPO/issues/${{ github.event.issue.number }}/assignees"
+            -d '{"issue": '${ISSUE_NUMBER}'}' \
+            "https://api.github.com/repos/OWNER/REPO/issues/${ISSUE_NUMBER}/assignees"
